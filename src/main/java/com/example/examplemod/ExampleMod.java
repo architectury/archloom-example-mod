@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 @Mod("examplemod")
 public class ExampleMod {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public ExampleMod() {
 
