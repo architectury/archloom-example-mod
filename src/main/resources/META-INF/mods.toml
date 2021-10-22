@@ -52,8 +52,8 @@ side = "BOTH" # Specify where this mod is required: can be BOTH, CLIENT or SERVE
 modId = "minecraft"
 mandatory = true
 # See above for how to read this notation, this essentially means any
-# version of Minecraft from 1.16.5 (inclusive) until 1.17 (exclusive),
-# so versions 1.16.* would be valid.
-versionRange = "[1.16.5,1.17)"
+# version of Minecraft from 1.17.1 (inclusive) until 1.18 (exclusive),
+# so versions 1.17.* would be valid.
+versionRange = "[1.17.1,1.18)"
 ordering = "NONE"
 side = "BOTH"
