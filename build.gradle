@@ -1,10 +1,12 @@
 plugins {
-    id 'dev.architectury.loom' version '0.7.2-SNAPSHOT'
+    id 'dev.architectury.loom' version '0.10.0-SNAPSHOT'
     id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+// when using loom 0.10.0 with minecraft 1.16,
+// be sure to set this (and other references to Java 16)
+// to Java 8, obviously
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -15,27 +17,32 @@ loom {
     // and want loom to stop warning you about their license
     silentMojangMappingsLicense()
 
-    // specify the mixin configs used in this mod
-    // this will be added to the jar manifest as well!
-    mixinConfigs = [
-            "examplemod.mixins.json"
-    ]
+    // since loom 0.10, you are **required** to use the
+    // "forge" block to configure forge-specific features,
+    // such as the mixinConfigs array or datagen
+    forge {
+        // specify the mixin configs used in this mod
+        // this will be added to the jar manifest as well!
+        mixinConfigs = [
+                "examplemod.mixins.json"
+        ]
 
-    // missing access transformers?
-    // don't worry, you can still use them!
-    // note that your AT *MUST* be located at
-    // src/main/resources/META-INF/accesstransformer.cfg
-    // to work as there is currently no config option to change this.
-    // also, any names used in your access transformer will need to be
-    // in SRG mapped ("func_" / "field_" with MCP class names) to work!
-    // (both of these things may be subject to change in the future)
+        // missing access transformers?
+        // don't worry, you can still use them!
+        // note that your AT *MUST* be located at
+        // src/main/resources/META-INF/accesstransformer.cfg
+        // to work as there is currently no config option to change this.
+        // also, any names used in your access transformer will need to be
+        // in SRG mapped ("func_" / "field_" with MCP class names) to work!
+        // (both of these things may be subject to change in the future)
 
-    // this will create a data generator configuration
-    // that you can use to automatically generate assets and data
-    // using architectury loom. Note that this currently *only* works
-    // for forge projects made with architectury loom!
-    dataGen {
-        mod project.mod_id
+        // this will create a data generator configuration
+        // that you can use to automatically generate assets and data
+        // using architectury loom. Note that this currently *only* works
+        // for forge projects made with architectury loom!
+        dataGen {
+            mod project.mod_id
+        }
     }
 
     // This allows you to modify your launch configurations,
@@ -56,8 +63,8 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
-    // In this example, we need the following maven to satisfy
-    // our dependency for Just Enough Items.
+    // in this example, we need the following maven
+    // to satisfy our dependency for JEI.
     maven {
         name = "Progwml6 (Just Enough Items)"
         url = "https://dvs1.progwml6.com/files/maven/"
@@ -69,14 +76,14 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
     // choose what mappings you want to use here
-    // leave this uncommented if you want to use mojang's official mappings
+    // leave this uncommented if you want to use
+    // mojang's official mappings, or feel free
+    // to add your own mappings here (how about
+    // mojmap layered with parchment, for example?)
     mappings minecraft.officialMojangMappings()
 
     // uncomment this if you want to use yarn mappings
     // mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-
-    // uncomment this if you want to use mcp mappings
-    // mappings "de.oceanlabs.mcp:mcp_${project.mcp_channel}:${project.mcp_mappings}"
 
     // your forge dependency, this is **required** when using Forge Loom in forge mode!
     forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
@@ -91,9 +98,9 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     // don't worry about loom "not finding a forge mod" here,
     // JEI's api just doesn't have any class with an @Mod annotation
-    modCompileOnly "mezz.jei:jei-1.16.4:${jei_version}:api"
+    modCompileOnly "mezz.jei:jei-1.17.1:${jei_version}:api"
     // at runtime, use the full JEI jar
-    modRuntime "mezz.jei:jei-1.16.4:${jei_version}"
+    modRuntimeOnly "mezz.jei:jei-1.17.1:${jei_version}"
 }
 
 processResources {
@@ -107,20 +114,15 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-
-    // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
-    // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
-    // We'll use that if it's available, but otherwise we'll use the older option.
-    def targetVersion = 8
-    if (JavaVersion.current().isJava9Compatible()) {
-        it.options.release = targetVersion
-    }
+    options.encoding = "UTF-8"
+    // when using 1.17, this should be 16
+    // when using 1.16, this should be 8
+    options.release = 16
 }
 
 java {
