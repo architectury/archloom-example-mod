@@ -1,4 +1,4 @@
-**This has been deprecated and archived in favour of [Architectury Templates](https://github.com/architectury/architectury-templates), which you can use for easier set-up and more up-to-date dependencies.** In your case, you will likely want the "forge" template.
+## **This has been deprecated and archived in favour of [Architectury Templates](https://github.com/architectury/architectury-templates), which you can use for easier set-up and more up-to-date dependencies.** In your case, you will likely want the "forge" template.
 
 ---
 
